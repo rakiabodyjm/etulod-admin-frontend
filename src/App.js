@@ -1,25 +1,155 @@
-import logo from './logo.svg';
-import './App.css';
+import {
+  createTheme,
+  CssBaseline,
+  ThemeProvider,
+  useMediaQuery,
+} from "@material-ui/core";
+import Drawer from "./components/Layout/Drawer";
+import Index from "./pages/index";
+import { useMemo, useState } from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import IndexPage from "./pages/index";
+import UserManagementPage from "./pages/users";
+import PageNotFound from "./components/screens/PageNotFound";
 
 function App() {
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          //Color Scheme to activate
+          type: prefersDarkMode ? "dark" : "light",
+          primary: {
+            main: "#1a237e",
+          },
+          secondary: {
+            main: "#f4511e",
+          },
+        },
+        //default Material UI Component Props
+        props: {
+          MuiButton: {
+            size: "small",
+          },
+          MuiFilledInput: {
+            margin: "dense",
+          },
+          MuiFormControl: {
+            margin: "dense",
+          },
+          MuiFormHelperText: {
+            margin: "dense",
+          },
+          MuiIconButton: {
+            size: "small",
+          },
+          MuiInputBase: {
+            margin: "dense",
+          },
+          MuiInputLabel: {
+            margin: "dense",
+          },
+          MuiListItem: {
+            dense: true,
+          },
+          MuiOutlinedInput: {
+            margin: "dense",
+          },
+          MuiFab: {
+            size: "small",
+          },
+          MuiTable: {
+            size: "small",
+          },
+          MuiTextField: {
+            margin: "dense",
+          },
+          MuiToolbar: {
+            variant: "dense",
+          },
+        },
+        //Setting fontfamily for typography components
+        typography: {
+          htmlFontSize: 16,
+          fontSize: 16,
+          fontFamily: [
+            "Montserrat",
+            "-apple-system",
+            "BlinkMacSystemFont",
+            "Roboto",
+            "Oxygen",
+          ].join(","),
+        },
+      }),
+    [prefersDarkMode]
+  );
+  const [currentPage, setCurrentPage] = useState("Director's");
+  const routes = useMemo(
+    () => [
+      {
+        title: "Dashboard",
+        url: "/",
+        exact: true,
+        component: () => <IndexPage />,
+      },
+      {
+        title: "User Management",
+        url: "/users",
+        component: () => <UserManagementPage />,
+      },
+      {
+        title: "TD Management",
+        url: "/tricycledrivers",
+      },
+      {
+        title: "Configurations",
+        url: "/configurations",
+      },
+    ],
+    []
+  );
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <Drawer currentPage={currentPage}>
+            <Switch>
+              {routes.map((ea) => (
+                <Route path={ea.url} {...(ea.exact && { exact: true })}>
+                  {ea?.component ? <ea.component /> : <PageNotFound />}
+                </Route>
+              ))}
+            </Switch>
+          </Drawer>
+        </Router>
+        {/* <Index /> */}
+      </ThemeProvider>
+    </>
   );
 }
+
+// const routes = [
+//   {
+//     title: "Dashboard",
+//     url: "/",
+//     exact: true,
+//     component: <IndexPage />,
+//   },
+//   {
+//     title: "User Management",
+//     url: "/users",
+//     component: <UserManagementPage />,
+//   },
+//   {
+//     title: "TD Management",
+//     url: "/tricycledrivers",
+//   },
+//   {
+//     title: "Configurations",
+//     url: "/configurations",
+//   },
+// ];
 
 export default App;
