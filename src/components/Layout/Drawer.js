@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -17,8 +17,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import { Home, Motorcycle, Settings } from "@material-ui/icons";
 import { Box } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
-
+import { useHistory, useLocation } from "react-router-dom";
 const drawerWidth = 320;
 
 const useStyles = makeStyles((theme) => ({
@@ -96,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function PersistentDrawerLeft({ children, currentPage }) {
+export default function PersistentDrawerLeft({ children }) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -135,6 +134,17 @@ export default function PersistentDrawerLeft({ children, currentPage }) {
     ];
   }, []);
 
+  const location = useLocation();
+  const currentPath = useMemo(() => {
+    return (
+      listMenuitems.find((fi) => fi.url === location.pathname)?.title ||
+      "E-Tulod Admin"
+    );
+  }, [location]);
+  useEffect(() => {
+    console.log(location);
+  }, [location]);
+
   return (
     <div className={classes.root}>
       <AppBar
@@ -154,7 +164,7 @@ export default function PersistentDrawerLeft({ children, currentPage }) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap>
-            {currentPage}
+            {currentPath}
           </Typography>
         </Toolbar>
       </AppBar>

@@ -5,9 +5,8 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 import Drawer from "./components/Layout/Drawer";
-import Index from "./pages/index";
-import { useMemo, useState } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { useMemo } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import IndexPage from "./pages/index";
 import UserManagementPage from "./pages/users";
 import PageNotFound from "./components/screens/PageNotFound";
@@ -84,7 +83,7 @@ function App() {
       }),
     [prefersDarkMode]
   );
-  const [currentPage, setCurrentPage] = useState("Director's");
+
   const routes = useMemo(
     () => [
       {
@@ -109,15 +108,20 @@ function App() {
     ],
     []
   );
+
   return (
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>
-          <Drawer currentPage={currentPage}>
+          <Drawer>
             <Switch>
               {routes.map((ea) => (
-                <Route path={ea.url} {...(ea.exact && { exact: true })}>
+                <Route
+                  key={ea.title}
+                  path={ea.url}
+                  {...(ea.exact && { exact: true })}
+                >
                   {ea?.component ? <ea.component /> : <PageNotFound />}
                 </Route>
               ))}
@@ -129,27 +133,5 @@ function App() {
     </>
   );
 }
-
-// const routes = [
-//   {
-//     title: "Dashboard",
-//     url: "/",
-//     exact: true,
-//     component: <IndexPage />,
-//   },
-//   {
-//     title: "User Management",
-//     url: "/users",
-//     component: <UserManagementPage />,
-//   },
-//   {
-//     title: "TD Management",
-//     url: "/tricycledrivers",
-//   },
-//   {
-//     title: "Configurations",
-//     url: "/configurations",
-//   },
-// ];
 
 export default App;
